@@ -276,8 +276,7 @@ The statment logger service is a simple go http server that logs the statements 
 ![Magic 8 Application](./readme_assets/Magic8_5.png)
 
 
-Access the web application at https://magic8client.malcolm.io for the magic8ball application and see that the entered statements start logging iin the statement logger service trhough Fluent Bit.
-
+Access the web application at https://magic8client.malcolm.io for the magic8ball application and see entered statements logged in statement logger service through Fluent Bit.
 
 
 ### Clean Up.
@@ -299,3 +298,5 @@ kubectl delete namespace magic8
 helm uninstall ingress-nginx --namespace ingress-nginx
 
 ```
+
+Hope you found this walk through helpful and have a general idea on how Fluent Bit can be used. Thank you for reading.
