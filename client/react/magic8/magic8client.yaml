@@ -1,0 +1,69 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: magic8client
+  labels:
+    appname: magic8client
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      appname: magic8client
+  template:
+    metadata:
+      labels:
+        appname: magic8client
+    spec:
+      containers:
+        - name: magic8client
+          image: malcolmpereira/magic8react:1.0.0
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "200m"
+            limits:
+              memory: "100Mi"
+              cpu: "250m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: magic8client
+  labels:
+    appname: magic8client
+spec:
+  selector:
+    appname: magic8client
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: magic8client-ingress
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/proxy-body-size: "300m"
+    nginx.ingress.kubernetes.io/ssl-passthrough: "false"
+spec:
+  tls:
+    - hosts:
+        - magic8client.malcolm.io
+      secretName: client-ingress-tls  
+  rules:
+    - host: magic8client.malcolm.io
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: magic8client
+                port:
+                  number: 80

@@ -1,0 +1,20 @@
+{
+    "CN": "magic8service.malcolm.io",
+    "key": {
+        "algo": "rsa",
+        "size": 2048
+    },
+    "names": [
+        {
+            "C": "USA",
+            "L": "Auburn",
+            "O": "Image API",
+            "OU": "Image API",
+            "ST": "WA"
+        }
+    ],
+    "hosts": [
+        "magic8service.malcolm.io",
+        "localhost"
+    ]
+}

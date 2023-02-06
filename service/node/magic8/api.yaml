@@ -1,0 +1,80 @@
+openapi: "3.0.3"
+
+info:
+  title: "Magic 8 API"
+  description: "Open API documentation for Magic 8 Service"
+  version: "1.0.0"
+
+servers:
+  - url: "http://localhost:3000/magic8"
+  - url: "https://magic8service.malcolm.io/magic8"
+
+tags:
+  - name: "Magic8"
+    description: "Magic 8 Service API Endpoint"
+
+paths:
+  /predict:
+    post:
+      description: "Magic8 Prediction"
+      tags:
+        - "Magic8"
+      requestBody:
+        description: "Magic8 Service Prediction Request"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PredictionRequest"
+      responses:
+        "200":
+          description: "Successful Prediction Response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PredictionResponse"
+        "400":
+          description: Invalid Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StatusResponse"
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StatusResponse"
+
+components:
+  schemas:
+    StatusResponse:
+      description: "API response status"
+      properties:
+        statusCode:
+          type: integer
+          description: "Status of the response and applicable error code"
+        error:
+          type: string
+          description: Error Type
+        message:
+          type: string
+          description: "Error message for response"
+    PredictionRequest:
+      description: "Prediction Request"
+      properties:
+        statement:
+          type: string
+          description: "Statement for prediction"
+    PredictionResponse:
+      description: "Prediction Response"
+      properties:
+        statement:
+          type: string
+          description: "Statement for prediction"
+        result:
+          type: string
+          description: "Result for prediction"
+        outcome:
+          type: number
+          description: "Outcome for  prediction 1 - Affirmative, 0 - Negative, -1 Non-committal"

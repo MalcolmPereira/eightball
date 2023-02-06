@@ -1,0 +1,116 @@
+kind: DaemonSet
+
+replicaCount: 1
+
+image: 
+  repository: cr.fluentbit.io/fluent/fluent-bit
+  tag: "latest-debug"
+  pullPolicy: Always
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name:
+
+rbac:
+  create: true
+  nodeAccess: false
+
+dnsPolicy: ClusterFirst 
+
+resources: 
+  requests:
+     cpu: 500m
+     memory: 265Mi
+  limits:
+     cpu: 500m
+     memory: 512Mi
+
+labels: 
+  appname: magic8FluentBit
+  
+
+config:
+  service: |
+    [SERVICE]
+        daemon Off
+        flush {{ .Values.flush }}
+        log_level debug
+        parsers_file parsers.conf
+        parsers_file custom_parsers.conf
+        http_server On
+        http_listen 0.0.0.0
+        http_port {{ .Values.metricsPort }}
+        health_check On
+  
+  inputs: |
+    [INPUT]
+        name tail
+        path /var/log/containers/magic8service*.log
+        tag kube.*
+        multiline.parser docker,cri
+        read_from_head true
+        buffer_chunk_size 3MB
+        buffer_max_size 5MB
+        mem_buf_limit 5MB
+        skip_long_lines Off
+   
+  filters: |
+    
+    [FILTER]
+        name kubernetes
+        match kube.*
+        merge_log On
+        merge_log_key log_processed
+   
+    [FILTER]
+        name   grep
+        match  *
+        regex  log STATEMENT
+
+    [FILTER]
+        name parser
+        parser magic8-parser
+        match kube.*
+        key_name log
+        preserve_key true
+        reserve_data true
+        match kube.*
+
+    [FILTER]
+        name modify
+        match *    
+        Remove_wildcard date
+        Remove_wildcard log
+        Remove_wildcard log_processed
+        Remove_wildcard kubernetes
+        Remove_wildcard stream
+        Remove_wildcard time
+
+  upstream: {}
+
+  outputs: |
+    [OUTPUT]
+        #for debugging only should be turned off in PROD
+        #PLEASE TURN OFF IN PROD		
+        name stdout
+        match *
+    
+    [OUTPUT]    
+        name http
+        match *
+        host 10.0.0.182
+        port  8080
+        uri   /log
+        format json
+        body_key ${statement}
+   
+  customParsers: |
+    [PARSER]
+      name magic8-parser
+      format regex
+      regex \STATEMENT:(?<statement>([ a-zA-Z0-9]*))
+
+  extraFiles: {}
+
+logLevel: debug
