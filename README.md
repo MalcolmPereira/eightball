@@ -16,7 +16,7 @@ Code: https://github.com/MalcolmPereira/eightball
 
 [Fluent Bit](https://fluentbit.io) is an end to end observability pipeline and as stated in Fluent Bit vision statement - “Fluent Bit is a super fast, lightweight, and highly scalable logging and metrics processor and forwarder. It is the preferred choice for cloud and containerized environments.” 
 
-In essence if you want to aggregate logging and metrics in a cloud environment and have separate systems for visualizing logs and metrics Fluent Bit is your got to choice.
+In essence if you want to aggregate logging and metrics in a cloud environment and have separate systems for visualizing logs and metrics FluentBit is your go to choice.
 
 [Fluent Bit Documentation](https://docs.fluentbit.io/manual) is succinct to get you started for different use cases.
 
