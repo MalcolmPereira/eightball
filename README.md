@@ -3,39 +3,39 @@
 TLDR:
 Simple walk through for Fluent Bit Log Filtering and HTTP Forwarding on a Kubernetes cluster.
 
-Code:
+Code: https://github.com/MalcolmPereira/eightball
 
 **Versions**:
 
-Ingress-nginx: 1.5.1
+        Ingress-nginx: 1.5.1
 
-Fluent Bit: 2.0.8
+        Fluent Bit: 2.0.8
 
 
 ## What is FluentBit
 
 [Fluent Bit](https://fluentbit.io) is an end to end observability pipeline and as stated in Fluent Bit vision statement - “Fluent Bit is a super fast, lightweight, and highly scalable logging and metrics processor and forwarder. It is the preferred choice for cloud and containerized environments.” 
 
-In essence if you want to aggregate logging and metrics in a cloud environment and have separate systems for visualizing logs and metrics Fluent Bit is your got to choice
+In essence if you want to aggregate logging and metrics in a cloud environment and have separate systems for visualizing logs and metrics Fluent Bit is your got to choice.
 
-[Fluent Bit Documentation](https://docs.fluentbit.io/manual) is succinct to get you started for the desired behavior.
+[Fluent Bit Documentation](https://docs.fluentbit.io/manual) is succinct to get you started for different use cases.
 
-Fluent Bit Data Pipeline consists of plugins to manipulate and route data to output destinations which includes the following plugin categories:
+Fluent Bit data pipeline consists of plugins to manipulate and route data to output destinations which includes following plugin categories:
 
 - Input
-  Input plugins that allow to source data from various sources  
+  - Input plugins that allow to source data from various sources  
 
 - Parser
-  Parsers that allow to parse and input data and convert from unstructured to structured format
+  - Parsers that allow to parse and input data and convert from unstructured to structured format
 
 - Filter
-  Filters that allow to filter, modify and enrich data.    
+  - Filters that allow to filter, modify and enrich data.    
 
 - Router
-  Create routing rules around the data
+  - Create routing rules around the data
 
 - Output
-  Output plugins that connect the data to various output sources
+  - Output plugins that connect the data to various output sources
 
 
 Please checkout [Fluent Bit Documentation](https://docs.fluentbit.io/manual) for further details.
@@ -57,18 +57,21 @@ The aim of  the application is to demonstrate setting up fluent bit for parsing 
 
 ![Magic 8 Application](./readme_assets/Magic8.drawio.png)
 
+
 ![Magic 8 Application](./readme_assets/Magic8_1.gif)
 
+
 ![Magic 8 Application](./readme_assets/Magic8_2.gif)
+
 
 ![Magic 8 Application](./readme_assets/Magic8_3.png)
 
 
 ## Fluent Bit Configuration
 
-Fluent Bit is installed via helm using the definitions in fluent-bit-values.yaml file. Some important sections in the yaml file are as follows.
+Fluent Bit is installed via helm using definitions in fluent-bit-values.yaml file, some important sections in yaml file are as follows.
 
-The input section tails Magic8 Service logs.
+- The input section tails Magic8 Service logs.
 
 ```yaml
 ...
@@ -89,7 +92,7 @@ The input section tails Magic8 Service logs.
 ...
 ```
 
-The filter parser filters out log lines that do not have STATEMENT string in the log lines.
+- The filter parser filters out log lines that do not have STATEMENT string in the log lines.
 
 ```yaml
 ....
@@ -100,7 +103,7 @@ The filter parser filters out log lines that do not have STATEMENT string in the
 ....
 ```
 
-Another filter parser extracts the statement using [Rubluar Regular Expression](https://rubular.com) to parse statement item from the log.
+- Another filter parser extracts the statement using [Rubluar Regular Expression](https://rubular.com) to parse statement item from the log.
 
 ```yaml
 ...
@@ -125,7 +128,7 @@ Another filter parser extracts the statement using [Rubluar Regular Expression](
 ...      
 ```
 
-Another filter removes any unrequired elements from log line which is not required by the statment capturing service.
+- Another filter removes elements from log lines which are not required by statment capturing service.
 
 ```yaml
 ....
@@ -141,7 +144,7 @@ Another filter removes any unrequired elements from log line which is not requir
 ....        
 ```
 
-Finally output plugin routes the statement  a logging service. The logging service is running on 10.0.0.182 
+Finally output plugin routes statements t0 a logging service. The logging service is running some reachable address e.g. 10.0.0.182 
 
 ```yaml
 ....
@@ -239,7 +242,7 @@ kubectl create secret tls client-ingress-tls --key tls/client_tls/magic8client-k
 
 ```
 
-Apply the magic8 deployments.
+Apply magic8 deployments.
 
 ```shell
 
@@ -279,7 +282,6 @@ Access the web application at https://magic8client.malcolm.io for the magic8ball
 
 ### Clean Up.
 
-I
 ```shell
 
 helm uninstall fluent-bit --namespace magic8
@@ -295,4 +297,5 @@ kubectl delete secret client-ingress-tls --namespace magic8
 kubectl delete namespace magic8
 
 helm uninstall ingress-nginx --namespace ingress-nginx
+
 ```
